@@ -1,5 +1,6 @@
 "use client";
 
+import { resolve } from 'path';
 import { errorComeLogin, loginWithEmailPassword } from '../firebase/firebaseAuth';
 import { useState } from "react";
 
@@ -10,34 +11,10 @@ type loginType = {
 export default function LogIn({ setLoginOrSignup }: loginType) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isShow, setIsShow] = useState(false);
 
-    const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-
-        // Reset error and success state before login attempt
-        setIsShow(false);
-        setError('');
-
-        try {
-            // Call login function and wait for the result
-            await loginWithEmailPassword(email, password);
-
-            // Check if errorComeLogin is set (assuming it is a variable that gets updated)
-            const errorMessage = errorComeLogin; // Ensure errorComeLogin is correctly set after login
-
-            if (errorMessage) {
-                setError(errorMessage); // Set error state if there's an error
-            } else {
-                setError(''); // Clear error if login is successful
-            }
-        } catch (err) {
-            // Handle any unexpected errors
-            setError('An unexpected error occurred.');
-        }
-
-        setIsShow(true); // Show the message (either error or success)
+        loginWithEmailPassword(email, password);
     };
 
     return (
@@ -83,13 +60,6 @@ export default function LogIn({ setLoginOrSignup }: loginType) {
                             Register
                         </button>
                     </footer>
-
-                    {/* Display the message only if isShow is true */}
-                    {/* {isShow && (
-                        <div className={`text-center py-3 ${error === '' ? 'text-red-700' : 'text-green-700'}`}>
-                            {error === '' ? 'Invalid Credentials' : "Successfully logged in"}
-                        </div>
-                    )} */}
                 </div>
             </div>
         </>

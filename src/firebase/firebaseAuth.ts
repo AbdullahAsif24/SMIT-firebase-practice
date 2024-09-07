@@ -4,8 +4,8 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 
 const auth = getAuth(app);
 
-export let errorComeLogin:any;
-export let errorComeSignup:any;
+export let errorComeLogin: string | null = null;
+export let errorComeSignup: string | null = null;
 
 export function signupWithEmailPassword(email: string, password: string) {
 
@@ -14,6 +14,7 @@ export function signupWithEmailPassword(email: string, password: string) {
             // Signed up 
             const user = userCredential.user;
             console.log(user, 'user created successfully.');
+            errorComeLogin = null
             // ...
         })
         .catch((error) => {
@@ -34,7 +35,7 @@ export function loginWithEmailPassword(email: string, password: string) {
             // Signed in 
             const user = userCredential.user;
             console.log(user, 'user')
-            errorComeLogin = ''
+            errorComeLogin = null
             // ...
         })
         .catch((error) => {
