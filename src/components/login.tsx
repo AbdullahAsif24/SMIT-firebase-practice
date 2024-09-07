@@ -85,11 +85,11 @@ export default function LogIn({ setLoginOrSignup }: loginType) {
                     </footer>
 
                     {/* Display the message only if isShow is true */}
-                    {isShow && (
+                    {/* {isShow && (
                         <div className={`text-center py-3 ${error === '' ? 'text-red-700' : 'text-green-700'}`}>
                             {error === '' ? 'Invalid Credentials' : "Successfully logged in"}
                         </div>
-                    )}
+                    )} */}
                 </div>
             </div>
         </>
