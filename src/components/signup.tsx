@@ -1,14 +1,11 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import { signupWithEmailPassword } from '../firebase/firebaseAuth'
 import { useState } from "react";
 
-type signUpType = {
-  setLoginOrSignup: (fn: string) => void
-}
 
-
-export default function SignUp({ setLoginOrSignup }: signUpType) {
+export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,12 +26,13 @@ export default function SignUp({ setLoginOrSignup }: signUpType) {
       await signupWithEmailPassword(email, password);
       setEmail('')
       setPassword('')
-      setLoginOrSignup('login')
     } catch (error: any) {
       setErrorMessage(error.message || "An unknown error occurred.");
     }
 
   };
+
+  const route = useRouter()
 
   return (
     <>
@@ -66,7 +64,9 @@ export default function SignUp({ setLoginOrSignup }: signUpType) {
           </form>
           <footer>
             <button className="text-indigo-700 hover:text-blue-700 text-sm float-right"
-              onClick={() => { setLoginOrSignup('login') }}
+            onClick={()=>{
+              route.push('/login')
+            }}
             >Log in</button>
           </footer>
         </div>

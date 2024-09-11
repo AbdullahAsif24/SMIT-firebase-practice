@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { loginWithEmailPassword } from '../firebase/firebaseAuth';
-import LoggedIn from "./loggedinUser";
+import { useRouter } from "next/navigation";
 
-type loginType = {
-    setLoginOrSignup: (fn: string) => void;
-    setUserName: (fn:string) => void
-};
 
-export default function LogIn({ setLoginOrSignup, setUserName }: loginType) {
+export default function LogIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -28,8 +24,6 @@ export default function LogIn({ setLoginOrSignup, setUserName }: loginType) {
         
         try {
             await loginWithEmailPassword(email, password);
-            setUserName(email.replace('@gmail.com', '')); // Set username without @gmail.com
-            setLoginOrSignup('loggedin')
             setEmail('')
             setPassword('')
         } catch (error: any) {
@@ -37,6 +31,7 @@ export default function LogIn({ setLoginOrSignup, setUserName }: loginType) {
         }
     };
 
+    const route = useRouter()
 
 
     return (
@@ -81,7 +76,9 @@ export default function LogIn({ setLoginOrSignup, setUserName }: loginType) {
                 <footer>
                     <button
                         className="text-indigo-700 hover:text-blue-700 text-sm float-right"
-                        onClick={() => setLoginOrSignup('signup')}
+                        onClick={()=>{
+                            route.push('/signup')
+                          }}
                     >
                         Register
                     </button>
