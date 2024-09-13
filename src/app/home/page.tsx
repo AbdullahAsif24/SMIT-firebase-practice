@@ -1,10 +1,9 @@
 'use client'
 import { useAuthContext } from "@/context/auth.context";
-import { useRouter } from "next/navigation";
+import { SignOutFunc, auth } from "@/firebase/firebaseAuth";
 
 
 export default function LoggedIn() {
-    const route = useRouter()
     const {user} = useAuthContext()
 
     function extractNameFromEmail(email: string): string {
@@ -27,16 +26,10 @@ export default function LoggedIn() {
         <>
             <div className="h-screen bg-indigo-700 flex items-center justify-center flex-col gap-2">
                 <h1 className="font-bold text-2xl">Hello {name}</h1>
-                <div className="flex gap-2">
+                <div className="flex">
                     <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-900 font-bold hover:text-white hover:bg-slate-800 hover:border-slate-800 focus:text-white focus:bg-slate-800 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none-sm float-right"
-                        onClick={() => { 
-                            route.push('/login')
-                        }}
-                    >Go to Log in</button>
-
-                    <button className="rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-900 font-bold hover:text-white hover:bg-slate-800 hover:border-slate-800 focus:text-white focus:bg-slate-800 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none-sm float-right"
-                        onClick={() => { route.push('/signup') }}
-                    >Go to Sign up</button>
+                        onClick={() => {SignOutFunc(auth)}}
+                    >Sign out</button>
                 </div>
             </div>
         </>

@@ -1,8 +1,8 @@
 
 import { app } from './firebaseconfig';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
 
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 
 export function signupWithEmailPassword(email: string, password: string) {
@@ -39,4 +39,28 @@ export function loginWithEmailPassword(email: string, password: string) {
             console.error(errorMessage);
             throw new Error(errorMessage)
         });
+}
+
+
+export function SignOutFunc(auth: any) {
+    signOut(auth).then(() => {
+        // Sign-out successful.
+    }).catch((error) => {
+        // An error happened.
+    });
+}
+
+
+
+export function EmailVerificationFunc() {
+    const crruser = auth.currentUser;
+    if (crruser) {
+        return sendEmailVerification(crruser).then(() => {
+            // Email sent.
+            console.log('Verification email sent!');
+        }).catch((error) => {
+            // An error happened.
+            throw new Error(error);
+        });
+    }
 }

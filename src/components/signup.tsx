@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { signupWithEmailPassword } from '../firebase/firebaseAuth'
+import { EmailVerificationFunc, signupWithEmailPassword } from '../firebase/firebaseAuth'
 import { useState } from "react";
 
 
@@ -26,6 +26,7 @@ export default function SignUp() {
       await signupWithEmailPassword(email, password);
       setEmail('')
       setPassword('')
+      EmailVerificationFunc()
     } catch (error: any) {
       setErrorMessage(error.message || "An unknown error occurred.");
     }
