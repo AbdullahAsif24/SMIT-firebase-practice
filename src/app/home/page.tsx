@@ -24,7 +24,7 @@ export default function LoggedIn() {
             ?.join(" ");
         return formattedName;
     }
-
+    
     let name = extractNameFromEmail(user?.email);
 
     useEffect(() => {
