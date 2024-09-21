@@ -29,7 +29,7 @@ export default function LoggedIn() {
 
     useEffect(() => {
         fetchTodos(setCrrTodo);
-    }, [setCrrTodo]);
+    }, []);
 
     return (
         <>
