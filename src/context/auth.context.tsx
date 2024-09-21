@@ -17,12 +17,15 @@ type AuthContextProviderType = {
 
 type AuthContextType = {
     user: UserType | null
+    setCrrTodo: (todo: any) => void
+    crrTodo: any
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthContextProvider({ children }: AuthContextProviderType) {
     const [user, setUser] = useState<UserType | null>(null);
+    const [crrTodo, setCrrTodo] = useState('')
 
     const route = useRouter();
 
@@ -47,7 +50,7 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user }} >
+        <AuthContext.Provider value={{ user, setCrrTodo, crrTodo }} >
             {children}
         </AuthContext.Provider>
     )
