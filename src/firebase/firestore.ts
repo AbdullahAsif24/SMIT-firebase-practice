@@ -37,10 +37,13 @@ export async function saveUser(user: UserType) {
 }
 
 export async function saveTodo(todo: string) {
-    // collection(db, "collectionName")
-    // addDoc("where", "what");
-
     let uid = auth.currentUser?.uid;
+
+    if (!uid) {
+        console.log("User is not authenticated");
+        return;
+    }
+
     let newTodo = { todo, uid };
 
     try {
@@ -51,9 +54,16 @@ export async function saveTodo(todo: string) {
     }
 }
 
+
 export async function fetchTodos(setCrrTodo: (todos: any[]) => void) {
-    let collectionRef = collection(db, "todos");
     let currentUserUID = auth.currentUser?.uid;
+
+    if (!currentUserUID) {
+        console.log("User is not authenticated");
+        return;
+    }
+
+    let collectionRef = collection(db, "todos");
     
     // Query the todos collection with the condition
     let q = query(collectionRef, where("uid", "==", currentUserUID));
