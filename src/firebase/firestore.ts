@@ -36,47 +36,49 @@ export async function saveUser(user: UserType) {
     }
 }
 
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebaseAuth"; // your auth instance
+
 export async function saveTodo(todo: string) {
-    let uid = auth.currentUser?.uid;
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            let uid = user.uid; // Now we have the uid after authentication
+            let newTodo = { todo, uid };
 
-    if (!uid) {
-        console.log("User is not authenticated");
-        return;
-    }
-
-    let newTodo = { todo, uid };
-
-    try {
-        let collectionRef = collection(db, "todos");
-        await addDoc(collectionRef, newTodo);
-    } catch (error) {
-        console.log(error);
-    }
+            try {
+                let collectionRef = collection(db, "todos");
+                await addDoc(collectionRef, newTodo);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            console.log("User is not authenticated");
+        }
+    });
 }
 
-
 export async function fetchTodos(setCrrTodo: (todos: any[]) => void) {
-    let currentUserUID = auth.currentUser?.uid;
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            let currentUserUID = user.uid; // uid is now available after authentication
+            let collectionRef = collection(db, "todos");
 
-    if (!currentUserUID) {
-        console.log("User is not authenticated");
-        return;
-    }
+            // Query the todos collection with the condition
+            let q = query(collectionRef, where("uid", "==", currentUserUID));
+            let allTodosSnapshot = await getDocs(q);
 
-    let collectionRef = collection(db, "todos");
-    
-    // Query the todos collection with the condition
-    let q = query(collectionRef, where("uid", "==", currentUserUID));
-    let allTodosSnapshot = await getDocs(q);
+            // Collect the todos into an array
+            let todosArray: any[] = [];
+            allTodosSnapshot.forEach((todo) => {
+                let todoData = todo.data();
+                todoData.id = todo.id; // Include the id for reference
+                todosArray.push(todoData); // Add todoData to the array
+            });
 
-    // Collect the todos into an array
-    let todosArray: any[] = [];
-    allTodosSnapshot.forEach((todo) => {
-        let todoData = todo.data();
-        todoData.id = todo.id; // Include the id for reference
-        todosArray.push(todoData); // Add todoData to the array
+            // Update the state with the todos array
+            setCrrTodo(todosArray);
+        } else {
+            console.log("User is not authenticated");
+        }
     });
-
-    // Update the state with the todos array
-    setCrrTodo(todosArray);
 }
