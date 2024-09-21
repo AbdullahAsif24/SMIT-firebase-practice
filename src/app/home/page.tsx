@@ -13,7 +13,7 @@ export default function LoggedIn() {
     if (!authContext) {
         throw new Error("useAuthContext must be used within an AuthContextProvider");
     }
-    const { user, crrTodo, setCrrTodo } = authContext;
+    const { user, crrTodo, setCrrTodo } = authContext as NonNullable<typeof authContext>;
 
     function extractNameFromEmail(email: string | null | undefined): string | undefined {
         const namePart = email?.split("@")[0];
