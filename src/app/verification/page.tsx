@@ -19,7 +19,7 @@ export default function VerifiedPage() {
             ?.replace(/[\(\)\-]/g, " ")  // Replace parentheses and hyphens with spaces
             ?.split(" ")  // Split by space
             ?.filter(Boolean)  // Remove empty strings from array
-            ?.map(word => word.charAt(0).toUpperCase() + word.slice(1))  // Capitalize each word
+            ?.map((word:any) => word.charAt(0).toUpperCase() + word.slice(1))  // Capitalize each word
             ?.join(" ");  // Join the words back together
 
             setErr(formattedError || 'An error occurred');
