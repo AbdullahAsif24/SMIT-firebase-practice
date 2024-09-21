@@ -54,14 +54,9 @@ export async function saveTodo(todo: string) {
 export async function fetchTodos(setCrrTodo: (todos: any[]) => void) {
     let collectionRef = collection(db, "todos");
     let currentUserUID = auth.currentUser?.uid;
-
-    let condition;
-    if (currentUserUID) {
-        condition = where("uid", "==", currentUserUID);
-    }
-
+    
     // Query the todos collection with the condition
-    let q = query(collectionRef, condition);
+    let q = query(collectionRef, where("uid", "==", currentUserUID));
     let allTodosSnapshot = await getDocs(q);
 
     // Collect the todos into an array
