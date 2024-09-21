@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { auth } from "./firebaseAuth";
 import { app } from "./firebaseconfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 const db = getFirestore(app);
@@ -36,8 +37,6 @@ export async function saveUser(user: UserType) {
     }
 }
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebaseAuth"; // your auth instance
 
 export async function saveTodo(todo: string) {
     onAuthStateChanged(auth, async (user) => {
