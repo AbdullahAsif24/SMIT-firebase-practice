@@ -8,9 +8,14 @@ import { fetchTodos, saveTodo } from "@/firebase/firestore";
 export default function LoggedIn() {
     const [todo, setTodo] = useState('');
 
-    const { user, crrTodo, setCrrTodo } = useAuthContext();
+    const authContext = useAuthContext();
 
-    function extractNameFromEmail(email: string): string {
+    if (!authContext) {
+        throw new Error("useAuthContext must be used within an AuthContextProvider");
+    }
+    const { user, crrTodo, setCrrTodo } = authContext;
+
+    function extractNameFromEmail(email: string | null | undefined): string | undefined {
         const namePart = email?.split("@")[0];
         const formattedName = namePart
             ?.replace(/[\._]/g, " ")
