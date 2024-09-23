@@ -13,12 +13,10 @@ import { app } from "./firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 
 
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 type UserType = {
-    email: string;
-    rollNum: string;
-    studentName: string;
+    email: string|null;
     uid: string;
 };
 

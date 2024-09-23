@@ -1,6 +1,7 @@
 "use client";
 
 import { app } from "@/firebase/firebaseconfig"; 
+import { saveUser } from "@/firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
@@ -24,7 +25,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthContextProvider({ children }: AuthContextProviderType) {
-    const [user, setUser] = useState<UserType | null>(null);
+    const [user, setUser] = useState<UserType|null>(null);
     const [crrTodo, setCrrTodo] = useState('')
 
     const route = useRouter();
@@ -35,6 +36,7 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
             if (loggedInUser) {
                 const { email, uid } = loggedInUser;
                 setUser({ email, uid });
+                saveUser({ email, uid })
                 if (loggedInUser.emailVerified) {
                     route.push("/home");
                 }else{

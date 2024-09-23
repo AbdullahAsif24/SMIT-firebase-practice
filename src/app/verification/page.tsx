@@ -1,6 +1,10 @@
 'use client'
 import { EmailVerificationFunc, SignOutFunc, auth } from "@/firebase/firebaseAuth"
-import { useState } from "react"
+import { db } from "@/firebase/firestore"
+import { onAuthStateChanged } from "firebase/auth"
+import { collection, onSnapshot, query, where } from "firebase/firestore"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function VerifiedPage() {
     const [err, setErr] = useState('Verification Email sent')
@@ -25,6 +29,9 @@ export default function VerifiedPage() {
             setErr(formattedError || 'An error occurred');
         }
     }
+
+    
+    
 
     return (
         <>

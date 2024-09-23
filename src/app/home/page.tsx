@@ -3,7 +3,9 @@ import { useAuthContext } from "@/context/auth.context";
 import { SignOutFunc, auth } from "@/firebase/firebaseAuth";
 import './home.css'
 import { useState, useEffect } from "react";
-import { fetchTodos, saveTodo } from "@/firebase/firestore";
+import { db, fetchTodos, saveTodo } from "@/firebase/firestore";
+import { collection, DocumentData, onSnapshot, query, where } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function LoggedIn() {
     const [todo, setTodo] = useState('');
@@ -20,16 +22,59 @@ export default function LoggedIn() {
         const formattedName = namePart
             ?.replace(/[\._]/g, " ")
             ?.split(" ")
-            ?.map((word:any) => word.charAt(0).toUpperCase() + word.slice(1))
+            ?.map((word: any) => word.charAt(0).toUpperCase() + word.slice(1))
             ?.join(" ");
         return formattedName;
     }
-    
+
     let name = extractNameFromEmail(user?.email);
 
+    // fetching todos
+    // useEffect(() => {
+    //     fetchTodos(setCrrTodo);
+    // }, []);
+
+    // for realtime todo
+    const [allTodos, setAllTodos] = useState<DocumentData[]>([]);
     useEffect(() => {
-        fetchTodos(setCrrTodo);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                let currentUserUID = user.uid;
+                let collectionRef = collection(db, "todos");
+                let condition = where("uid", "==", currentUserUID);
+                let q = query(collectionRef, condition);
+    
+                const unsubscribeSnapshot = onSnapshot(q, (querySnapshot) => {
+                    let newTodos: DocumentData[] = [];
+                    querySnapshot.docChanges().forEach((change) => {
+                        if (change.type === "added") {
+                            let todo = change.doc.data();
+                            todo.id = change.doc.id;
+                            newTodos.push(todo);
+                        }
+                        if (change.type === "modified") {
+                        }
+                        if (change.type === "removed") {
+                        }
+                    });
+    
+                    // Add new todos to the state if there are new ones
+                    if (newTodos.length > 0) {
+                        setAllTodos((prevTodos) => [...prevTodos, ...newTodos]);
+                    }
+                });
+    
+                // Clean up the snapshot listener on unmount
+                return () => unsubscribeSnapshot();
+            } else {
+                console.error("User not authenticated. Cannot fetch todos.");
+            }
+        });
+    
+        // Clean up onAuthStateChanged listener on unmount
+        return () => unsubscribe();
     }, []);
+    
 
     return (
         <>
@@ -53,8 +98,8 @@ export default function LoggedIn() {
                     </button>
                 </form>
                 <ul id="todoUl">
-                    {Array.isArray(crrTodo) && crrTodo.length > 0 ? (
-                        crrTodo.map((todo: any, index: number) => (
+                    {Array.isArray(allTodos) && allTodos.length > 0 ? (
+                        allTodos.map((todo: any, index: number) => (
                             <li key={index}>{todo.todo}</li>
                         ))
                     ) : (
